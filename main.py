@@ -1,3 +1,4 @@
+from Crossword.Player import Player
 from Person import Person
 
 path = "data/logins.txt"
@@ -6,9 +7,10 @@ path = "data/logins.txt"
 def login():
     odp = input("Do you want to\n1. sign in\n2. log in")
     users = readfile(path)
+    person = ""
+    nickname, email, password = input("Enter your nickname: "), input("Enter your e-mail: "), \
+        input("Enter your password: ")
     if int(odp) == 1:
-        nickname, email, password = input("Enter your nickname: "), input("Enter your e-mail: "),\
-                                    input("Enter your password: ")
         for p in users:
             czygit = True
             while czygit:
@@ -27,6 +29,16 @@ def login():
 
         person = Person(nickname, email, password)
         savechanges(path, person)
+        print("account created successfully")
+    else:
+        for p in users:
+            if nickname == p.decode(p.nick) and email == p.decode(p.email) and password == p.decode(p.password):
+                person = Person(nickname, email, password)
+                print(f"Welcome {nickname}!")
+            else:
+                print("Wrong login or password")
+                login()
+    return person
 
 
 def readfile(pathh):
@@ -47,3 +59,18 @@ def sortline(v_line):
 def savechanges(pathh, persona):
     ffile = open(pathh, 'a')
     ffile.write(persona)
+
+
+def game(player1, player2, odp):
+    print("gra")
+
+
+persongame = login()
+player1 = Player(persongame.getnick())
+answer = input("Do you want to play...\n1.Single player mode\n2.Multiplayer mode")
+if answer == 1:
+    nick = input("Enter your nickname: ")
+    player2 = Player(nick)
+    game(player1, player2, True)
+else:
+    game(player1, "", False)
