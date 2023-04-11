@@ -30,17 +30,17 @@ def login():
                 else:
                     czygit = False
 
-        person = Person(nickname, email, password)
+        person = Person(encode(nickname), encode(email), encode(password))
         savechanges(path, person.__str__())
         print("account created successfully")
     else:
         for p in users:
-            if nickname == p.decode(p.nick) and email == p.decode(p.email) and password == p.decode(p.password):
-                person = Person(nickname, email, password)
-                print(f"Welcome {nickname}!")
-            else:
-                print("Wrong login or password")
-                login()
+            if encode(nickname) == p.nick and encode(email) == p.email and encode(password) == p.password:
+                person = Person(decode(nickname), email, password)
+                print(f"\nWelcome {nickname}!\n")
+                return person
+        print("Wrong login or password")
+        login()
     return person
 
 
@@ -53,10 +53,45 @@ def readfile(pathh):
 
 
 def sortline(v_line):
-    info = v_line.split(",")
+    info = v_line.replace("\n", "").split(",")
     a, b, c = info[0], info[1], info[2]
     person1 = Person(a, b, c)
     return person1
+
+
+def listtostring(strr):
+    tmp = ""
+    for i in strr:
+        tmp += i
+    return tmp
+
+
+def encode(word):
+    key1 = "abcdefghijklmnoprstuvwxyz123456789"
+    key2 = "0987126543qplaksmznxjdiwuerydtfghu"
+    key1list = list(key1)
+    key2list = list(key2)
+    tochange = list(word)
+    for i in range(len(key1list)):
+        for j in range(len(tochange)):
+            if key1list[i] == tochange[j]:
+                tochange[j] = key2list[i]
+    word = listtostring(tochange)
+    return word
+
+
+def decode(word):
+    key2 = "abcdefghijklmnoprstuvwxyz123456789"
+    key1 = "0987126543qplaksmznxjdiwuerydtfghu"
+    key1list = list(key1)
+    key2list = list(key2)
+    tochange = list(word)
+    for i in range(len(key1list)):
+        for j in range(len(tochange)):
+            if key1list[i] == tochange[j]:
+                tochange[j] = key2list[i]
+    word = listtostring(tochange)
+    return word
 
 
 def savechanges(pathh, persona):
@@ -93,7 +128,7 @@ def game(player1, player2, odp, sets):
     for i in range(len(currset.lista)):
         print(f'{i+1}. {currset.lista[i].text}, key: {currset.lista[i].key+1}')
 
-    if odp:
+    if odp == 1:
         # multiplayer
         print('multi')
     else:
@@ -132,10 +167,10 @@ sets = (set1, set2, set3)
 
 persongame = login()
 player1 = Player(persongame.nick)
-answer = input("Do you want to play...\n1. Single player mode\n2. Multiplayer mode")
+answer = input("Do you want to play...\n1. Single player mode\n2. Multiplayer mode\n")
 if answer == 1:
     nick = input("Enter your nickname: ")
     player2 = Player(nick)
-    game(player1, player2, True, sets)
+    game(player1, player2, 1, sets)
 else:
-    game(player1, "", False, sets)
+    game(player1, "", 2, sets)
