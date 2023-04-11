@@ -1,4 +1,4 @@
-from Crossword.Player import Player
+from Player import Player
 from Person import Person
 from Word import Word
 from Set import Set
@@ -117,7 +117,7 @@ def savechanges(pathh, persona):
 
 def play(player, hiddenlist, currlist, currset):
     print(f'\nnow playing {player.nickname}...\n')
-    odp = input("Which password would you like to guess?")
+    odp = input("Which password would you like to guess? (number of the chosen one)")
     for i in range(len(currlist)):
         if int(odp)-1 == i:
             password = input("Enter your guess: ")
