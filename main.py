@@ -9,6 +9,20 @@ path = "data/logins.txt"
 leaderboard = "Leaderboards/"
 
 
+def addtoleaderboard(players):
+    if not os.path.exists(os.path.join(leaderboard, f'{players[0].nickname}.txt')):
+        with open(os.path.join(leaderboard, f'{players[0].nickname}.txt'), 'w') as f:
+            for i in range(len(players)):
+                f.write(f'{players[i].__str__()}\t')
+            f.write('\n')
+    else:
+        stringpath = leaderboard+players[0].nickname+'.txt'
+        ffile = open(stringpath, 'a')
+        for i in range(len(players)):
+            ffile.write(f'{players[i].__str__()}\t')
+        ffile.write('\n')
+
+
 def login():
     odp = input("Do you want to...\n1. sign in\n2. log in\n")
     users = readfile(path)
@@ -150,7 +164,8 @@ def write(player1, player2, hiddenlist, currset, odp):
         for j in range(len(hiddenlist[i])):
             if currset.lista[i].key == j:
                 print(f'[{hiddenlist[i][j]}] ', end="")
-            print(f'{hiddenlist[i][j]} ', end="")
+            else:
+                print(f'{hiddenlist[i][j]} ', end="")
         print('')
     print('')
     for i in range(len(currset.lista)):
@@ -179,10 +194,17 @@ def game(player1, player2, odp, sets):
             else:
                 hiddenlist = play(player2, hiddenlist, currlist, currset)
             decision += 1
+        players = list()
+        players.append(player1)
+        players.append(player2)
+        addtoleaderboard(players)
     else:
         while hiddenlist != 'exit':
             write(player1, player2, hiddenlist, currset, odp)
             hiddenlist = play(player1, hiddenlist, currlist, currset)
+        players = list()
+        players.append(player1)
+        addtoleaderboard(players)
 
 
 szkola1 = Word('plastyka', 3, 'przedmiot artysyczny w szkole')
@@ -198,14 +220,14 @@ wiosna1 = Word('motyl', 1, 'owad z kolorowymi skrzydlami')
 wiosna2 = Word('gesi', 0, 'dzikie ptaki, ktore lataja kluczem')
 wiosna3 = Word('ropucha', 0, 'wieksza od zaby')
 wiosna4 = Word('bobr', 1, 'buduje tamy na rzekach')
-wiosna5 = Word('drzewa', 0 , 'na zime zrzucily liscie, na wiosne znowu zielone')
+wiosna5 = Word('drzewa', 0, 'na zime zrzucily liscie, na wiosne znowu zielone')
 
 set2 = Set('wiosna', (wiosna1, wiosna2, wiosna3, wiosna4, wiosna5), 'ogrod')
 
 jesien1 = Word('jarzebina', 0, 'czerwone kulki na jesiennych drzewach')
 jesien2 = Word('jez', 1, 'ma kolce na grzbiecie')
 jesien3 = Word('kasztany', 2, 'brazowe, w kolczastej skorupie, rosna na drzewach')
-jesien4 = Word('bocian', 3 , 'dlugonogi ptak, odlatujacy jesienia do cieplych krajow')
+jesien4 = Word('bocian', 3, 'dlugonogi ptak, odlatujacy jesienia do cieplych krajow')
 jesien5 = Word('liscie', 5, 'zmieniaja kolor na pomaranczowy')
 jesien6 = Word('wrzesien', 7, 'miesiac rozpoczecia kalendarzowej jesieni')
 
@@ -213,13 +235,19 @@ set3 = Set('jesien', (jesien1, jesien2, jesien3, jesien4, jesien5, jesien6), 'je
 
 sets = (set1, set2, set3)
 
-
+# main code
 persongame = login()
 player1 = Player(persongame.nick)
-answer = input("Do you want to play...\n1. Single player mode\n2. Multiplayer mode\n")
-if int(answer) == 2:
-    nick = input("Enter your nickname: ")
-    player2 = Player(nick)
-    game(player1, player2, 1, sets)
-else:
-    game(player1, "", 2, sets)
+czyKoniec = True
+while czyKoniec:
+    answer = input("Do you want to play...\n1. Single player mode\n2. Multiplayer mode\n")
+    if int(answer) == 2:
+        nick = input("Enter your nickname: ")
+        player2 = Player(nick)
+        game(player1, player2, 1, sets)
+    else:
+        game(player1, "", 2, sets)
+    odpow = input("Would you like to play again? (y/n)")
+    if odpow == 'n':
+        czyKoniec = False
+print("\nThank you for playing!")
