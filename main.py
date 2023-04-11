@@ -1,5 +1,8 @@
 from Crossword.Player import Player
 from Person import Person
+from Word import Word
+from Set import Set
+import random
 
 path = "data/logins.txt"
 
@@ -28,7 +31,7 @@ def login():
                     czygit = False
 
         person = Person(nickname, email, password)
-        savechanges(path, person)
+        savechanges(path, person.__str__())
         print("account created successfully")
     else:
         for p in users:
@@ -58,19 +61,81 @@ def sortline(v_line):
 
 def savechanges(pathh, persona):
     ffile = open(pathh, 'a')
-    ffile.write(persona)
+    ffile.write(f'{persona}\n')
 
 
-def game(player1, player2, odp):
-    print("gra")
+def changeletter(word):
+    lista = list(word)
+    newlista = list()
+    for i in lista:
+        newlista.append('_')
+    return newlista
+
+
+def game(player1, player2, odp, sets):
+    rand = random.randint(0, 2)
+    currset = sets[rand]
+    print(f'Your set: {currset.name}\nHave fun :)')
+    hiddenlist = list()
+    for i in currset.lista:
+        hiddenpassword = list()
+        tmp = list(i.word)
+        for j in tmp:
+            hiddenpassword.append(changeletter(j))
+        hiddenlist.append(hiddenpassword)
+    print("Your crossword: ")
+    for i in range(len(hiddenlist)):
+        print(f'{i+1}. ', end="")
+        for j in range(len(hiddenlist[i])):
+            print(f'{hiddenlist[i][j]} ', end="")
+        print('')
+    print('')
+    for i in range(len(currset.lista)):
+        print(f'{i+1}. {currset.lista[i].text}, key: {currset.lista[i].key+1}')
+
+    if odp:
+        # multiplayer
+        print('multi')
+    else:
+        # singleplayer
+        print('single')
+
+
+szkola1 = Word('plastyka', 3, 'przedmiot artysyczny w szkole')
+szkola2 = Word('przerwa', 2, 'inaczej czas wolny miedzy lekcjami')
+szkola3 = Word('dziennik', 7, 'nauczyciel zapisuje tam oceny')
+szkola4 = Word('dzwonek', 3, 'dzwiek mowiacy o zakonczeniu lekcji')
+szkola5 = Word('zeszyt', 1, 'sluzy do zapisywania notatek')
+szkola6 = Word('tablica', 6, 'nauczyciel pisze po niej podczas zajec')
+
+set1 = Set('szkola', (szkola1, szkola2, szkola3, szkola4, szkola5, szkola6))
+
+wiosna1 = Word('motyl', 1, 'owad z kolorowymi skrzydlami')
+wiosna2 = Word('gesi', 0, 'dzikie ptaki, ktore lataja kluczem')
+wiosna3 = Word('ropucha', 0, 'wieksza od zaby')
+wiosna4 = Word('bobr', 1, 'buduje tamy na rzekach')
+wiosna5 = Word('drzewa', 0 , 'na zime zrzucily liscie, na wiosne znowu zielone')
+
+set2 = Set('wiosna', (wiosna1, wiosna2, wiosna3, wiosna4, wiosna5))
+
+jesien1 = Word('jarzebina', 0, 'czerwone kulki na jesiennych drzewach')
+jesien2 = Word('jez', 1, 'ma kolce na grzbiecie')
+jesien3 = Word('kasztany', 2, 'brazowe, w kolczastej skorupie, rosna na drzewach')
+jesien4 = Word('bocian', 3 , 'dlugonogi ptak, odlatujacy jesienia do cieplych krajow')
+jesien5 = Word('liscie', 5, 'zmieniaja kolor na pomaranczowy')
+jesien6 = Word('wrzesien', 7, 'miesiac rozpoczecia kalendarzowej jesieni')
+
+set3 = Set('jesien', (jesien1, jesien2, jesien3, jesien4, jesien5, jesien6))
+
+sets = (set1, set2, set3)
 
 
 persongame = login()
-player1 = Player(persongame.getnick())
-answer = input("Do you want to play...\n1.Single player mode\n2.Multiplayer mode")
+player1 = Player(persongame.nick)
+answer = input("Do you want to play...\n1. Single player mode\n2. Multiplayer mode")
 if answer == 1:
     nick = input("Enter your nickname: ")
     player2 = Player(nick)
-    game(player1, player2, True)
+    game(player1, player2, True, sets)
 else:
-    game(player1, "", False)
+    game(player1, "", False, sets)

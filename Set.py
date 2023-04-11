@@ -1,6 +1,5 @@
-from Word import Word
-
 
 class Set:
-    def __init__(self, lista):
-        lista = list()
+    def __init__(self, name, lista):
+        self.name = name
+        self.lista = lista
